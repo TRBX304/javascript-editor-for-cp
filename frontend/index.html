@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Local Judge</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <script>
+    // 読み込み直後の白い画面のチラつきを防ぐため、描画前にテーマを決める
+    (function () {
+      var t = null;
+      try { t = localStorage.getItem('local-judge-theme'); } catch (e) {}
+      if (t !== 'light' && t !== 'dark') {
+        t = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      }
+      document.documentElement.dataset.theme = t;
+    })();
+  </script>
+</head>
+<body>
+  <header class="bar">
+    <h1>ローカルジャッジ</h1>
+    <span class="env" id="env">Node.js</span>
+    <div class="bar-controls">
+      <button class="theme-toggle" id="swapBtn" type="button" title="テストケースとコードの左右を入れ替える"><span class="swap-icon" aria-hidden="true">⇄</span> 左右を入れ替える</button>
+      <button class="theme-toggle" id="themeBtn" type="button"></button>
+      <label class="tl">
+        実行時間制限
+        <input type="number" id="timeLimit" min="0.1" max="20" step="0.1" value="2" />
+        秒
+      </label>
+      <button id="runBtn" class="run">実行する</button>
+    </div>
+  </header>
+
+  <main class="layout" id="layout">
+    <section class="cases-pane">
+      <div class="pane-head">
+        <h2>テストケース</h2>
+        <div class="pane-actions">
+          <button class="ghost danger" id="clearCasesBtn">すべてクリア</button>
+          <button class="ghost" id="addCaseBtn">ケースを追加</button>
+        </div>
+      </div>
+      <p class="error" id="errorBox" role="alert" hidden></p>
+      <section class="verdict" id="verdict" aria-live="polite" hidden>
+        <span class="verdict-status" id="verdictStatus"></span>
+        <div class="verdict-detail">
+          <span id="verdictCount"></span>
+          <span id="verdictTime"></span>
+        </div>
+      </section>
+      <p class="hint">期待する出力を空欄にしたケースは判定せず、実行結果だけ表示します。</p>
+      <ol class="cases" id="cases"></ol>
+    </section>
+
+    <div class="splitter" id="splitter" role="separator" aria-orientation="vertical"
+      aria-label="テストケースとコードの幅を調整" tabindex="0"></div>
+
+    <section class="editor-pane">
+      <div class="pane-head">
+        <h2>コード</h2>
+        <button class="ghost" id="templateBtn">ひな形を入れる</button>
+      </div>
+      <div class="editor" id="editor"></div>
+      <p class="hint">Ctrl+Enter(⌘+Enter)で実行</p>
+    </section>
+  </main>
+
+  <template id="caseTemplate">
+    <li class="case">
+      <div class="case-head">
+        <h3 class="case-title"></h3>
+        <span class="badge" hidden></span>
+        <span class="case-time"></span>
+        <button class="remove" title="このケースを削除">削除</button>
+      </div>
+      <div class="io">
+        <label>入力<textarea class="in" spellcheck="false"></textarea></label>
+        <label>期待する出力<textarea class="expected" spellcheck="false"></textarea></label>
+      </div>
+      <div class="output" hidden>
+        <div class="out-block">
+          <span class="out-label">実行結果</span>
+          <pre class="stdout"></pre>
+        </div>
+        <div class="out-block err" hidden>
+          <span class="out-label">標準エラー出力</span>
+          <pre class="stderr"></pre>
+        </div>
+      </div>
+    </li>
+  </template>
+
+  <script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.52.2/min/vs/loader.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
