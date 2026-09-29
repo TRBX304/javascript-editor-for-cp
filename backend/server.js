@@ -11,7 +11,7 @@ const path = require('path');
 const { spawn } = require('child_process');
 
 const HOST = '127.0.0.1'; // ループバックのみで待ち受け(外部公開しない)
-const PORT = Number(process.env.PORT) || 2434;
+const PORT = Number(process.env.PORT) || 3000;
 const FRONTEND_DIR = path.join(__dirname, '..', 'frontend');
 
 const LIMITS = {
