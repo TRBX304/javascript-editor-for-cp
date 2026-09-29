@@ -11,7 +11,7 @@ if errorlevel 1 (
 )
 
 rem Open the browser 1 second later (after the server is up)
-start "" /min cmd /c "timeout /t 1 /nobreak >nul & start "" http://localhost:2434"
+start "" /min cmd /c "timeout /t 1 /nobreak >nul & start "" http://localhost:3000"
 
 echo Press Ctrl+C or close this window to stop the server.
 echo.
